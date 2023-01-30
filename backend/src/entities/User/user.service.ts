@@ -10,6 +10,10 @@ import { createToken } from "../../utils/jwt";
 
 export class UserService {
   static async create({ name, email, password }: CreateUserDTO) {
+    const userAlreadyExists = await UserRepository.findOneByEmail(email);
+
+    if (userAlreadyExists) throw new Exception(400, "User already exists");
+
     const hash = await bcrypt.hash(password, 3);
 
     const userCreated = await UserRepository.create({
