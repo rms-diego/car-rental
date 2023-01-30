@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-import { CreateUserDTO } from "./@types";
+import { CreateUserDTO, LoginUserDTO } from "./@types";
 
 import { UserRepository } from "./user.repository";
 
@@ -16,16 +16,27 @@ export class UserService {
 
     const hash = await bcrypt.hash(password, 3);
 
-    const userCreated = await UserRepository.create({
+    await UserRepository.create({
       name,
       email,
       password: hash,
     });
+  }
+
+  static async login({ email, password }: LoginUserDTO) {
+    const userFound = await UserRepository.findOneByEmail(email);
+
+    if (!userFound) {
+      throw new Exception(404, "Wrong email or user does not exists");
+    }
+
+    const comparePassword = await bcrypt.compare(password, userFound.password);
+    if (!comparePassword) throw new Exception(400, "Wrong password");
 
     const tokenPayload = {
-      id: userCreated.id,
-      name: userCreated.name,
-      email: userCreated.email,
+      id: userFound.id,
+      name: userFound.email,
+      email: userFound.email,
     };
 
     const token = createToken(tokenPayload);
