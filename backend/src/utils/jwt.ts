@@ -1,22 +1,29 @@
 import jwt from "jsonwebtoken";
+
 import { Exception } from "./Exception";
 
 const { SECRET } = process.env;
 
-const createToken = (data: any) => {
-  const token = jwt.sign(data, SECRET as string);
+interface TokenPayloadType {
+  id: string;
+  name: string;
+  email: string;
+}
 
-  return token;
-};
+export class Jwt {
+  static createToken(payload: TokenPayloadType) {
+    const token = jwt.sign(payload, SECRET as string);
 
-const compareToken = (data: string) => {
-  try {
-    const decodedToken = jwt.decode(data);
-
-    return decodedToken;
-  } catch {
-    throw new Exception(400, "Token Invalido");
+    return token;
   }
-};
 
-export { createToken, compareToken };
+  static compareToken(data: string) {
+    try {
+      const decodedToken = jwt.decode(data);
+
+      return decodedToken;
+    } catch {
+      throw new Exception(400, "Token Invalido");
+    }
+  }
+}

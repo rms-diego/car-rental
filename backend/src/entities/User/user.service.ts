@@ -6,7 +6,7 @@ import { UserRepository } from "./user.repository";
 
 import { Exception } from "../../utils/Exception";
 
-import { createToken } from "../../utils/jwt";
+import { Jwt } from "../../utils/jwt";
 
 export class UserService {
   static async create({ name, email, password }: CreateUserDTO) {
@@ -39,7 +39,7 @@ export class UserService {
       email: userFound.email,
     };
 
-    const token = createToken(tokenPayload);
+    const token = Jwt.createToken(tokenPayload);
 
     return token;
   }
