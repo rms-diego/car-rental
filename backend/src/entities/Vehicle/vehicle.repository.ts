@@ -19,4 +19,12 @@ export class VehicleRepository {
 
     return vehicleCreated;
   }
+
+  static async getAllVehicles(userId: string) {
+    const vehiclesFound = await prisma.vehicle.findMany({
+      where: { userId },
+    });
+
+    return vehiclesFound;
+  }
 }

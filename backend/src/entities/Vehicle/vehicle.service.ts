@@ -24,4 +24,22 @@ export class VehicleService {
 
     return vehicleCreated;
   }
+
+  static async getAllVehicles(userId: string) {
+    const vehiclesFound = await VehicleRepository.getAllVehicles(userId);
+
+    const serializeVehiclesFound = vehiclesFound.map((vehicle) => {
+      const serializedVehicle = {
+        id: vehicle.id,
+        name: vehicle.name,
+        brand: vehicle.brand,
+        type: vehicle.type,
+        vehicleImage: vehicle.vehicleImage,
+      };
+
+      return serializedVehicle;
+    });
+
+    return serializeVehiclesFound;
+  }
 }

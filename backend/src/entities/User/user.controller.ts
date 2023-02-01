@@ -5,6 +5,14 @@ import { UserService } from "./user.service";
 import { createUserBody, editBody, loginBody } from "./@types";
 
 export class UserController {
+  static async getAllVehicles(request: FastifyRequest, reply: FastifyReply) {
+    const { token } = request.headers;
+
+    const allVehicles = await UserService.getAllVehicles(token as string);
+
+    return reply.status(200).send({ vehicles: allVehicles });
+  }
+
   static async create(request: FastifyRequest, reply: FastifyReply) {
     const { name, email, password } = createUserBody.parse(request.body);
 

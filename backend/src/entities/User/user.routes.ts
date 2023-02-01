@@ -5,6 +5,12 @@ import { UserController } from "./user.controller";
 import { Jwt } from "../../utils/jwt";
 
 const userRoutes = async (app: FastifyInstance) => {
+  app.get(
+    "/user/getAllVehicles",
+    { preHandler: [Jwt.validateTokenHandler] },
+    UserController.getAllVehicles
+  );
+
   app.post("/user/create", UserController.create);
   app.post("/user/login", UserController.login);
 

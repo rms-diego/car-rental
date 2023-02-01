@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 
 import { CreateUserDTO, EditUserDTO, LoginUserDTO } from "./@types";
 
+import { VehicleService } from "../Vehicle/vehicle.service";
+
 import { UserRepository } from "./user.repository";
 
 import { Exception } from "../../utils/Exception";
@@ -9,6 +11,18 @@ import { Exception } from "../../utils/Exception";
 import { Jwt } from "../../utils/jwt";
 
 export class UserService {
+  static async getAllVehicles(token: string) {
+    const tokenDecoded = Jwt.compareToken(token);
+
+    if (tokenDecoded instanceof Exception) {
+      throw new Exception(tokenDecoded.statusCode, tokenDecoded.message);
+    }
+
+    const allVehicles = await VehicleService.getAllVehicles(tokenDecoded.id);
+
+    return allVehicles;
+  }
+
   static async create({ name, email, password }: CreateUserDTO) {
     const userAlreadyExists = await UserRepository.findOneByEmail(email);
 
