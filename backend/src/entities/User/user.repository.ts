@@ -19,6 +19,14 @@ export class UserRepository {
     return userFound;
   }
 
+  static async findOneById(id: string) {
+    const userFound = await prisma.user.findFirst({
+      where: { id },
+    });
+
+    return userFound;
+  }
+
   static async edit({ name, email, password }: EditUserDTO, userId: string) {
     const userEdited = await prisma.user.update({
       data: { name, email, password },
@@ -26,5 +34,11 @@ export class UserRepository {
     });
 
     return userEdited;
+  }
+
+  static async deleteUser(userId: string) {
+    await prisma.user.delete({
+      where: { id: userId },
+    });
   }
 }

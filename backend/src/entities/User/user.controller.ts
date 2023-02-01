@@ -34,4 +34,12 @@ export class UserController {
       .status(200)
       .send({ message: "user edited", newToken: tokenUpdated });
   }
+
+  static async deleteUser(request: FastifyRequest, reply: FastifyReply) {
+    const { token } = request.headers;
+
+    await UserService.deleteUser(token as string);
+
+    return reply.status(200).send({ message: "user deleted" });
+  }
 }

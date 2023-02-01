@@ -13,6 +13,12 @@ const userRoutes = async (app: FastifyInstance) => {
     { preHandler: [Jwt.validateTokenHandler] },
     UserController.edit
   );
+
+  app.delete(
+    "/user/deleteUser",
+    { preHandler: [Jwt.validateTokenHandler] },
+    UserController.deleteUser
+  );
 };
 
 export { userRoutes };

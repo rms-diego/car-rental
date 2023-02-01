@@ -68,4 +68,17 @@ export class UserService {
 
     return updateToken;
   }
+
+  static async deleteUser(token: string) {
+    const tokenDecoded = Jwt.compareToken(token);
+
+    if (tokenDecoded instanceof Exception) {
+      throw new Exception(tokenDecoded.statusCode, tokenDecoded.message);
+    }
+
+    const userExists = await UserRepository.findOneById(tokenDecoded.id);
+    if (!userExists) throw new Exception(400, "this user does not exists");
+
+    await UserRepository.deleteUser(tokenDecoded.id);
+  }
 }
