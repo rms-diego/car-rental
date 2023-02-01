@@ -13,7 +13,7 @@ export interface CreateUserDTO {
   password: string;
 }
 
-//login
+// login
 export const loginBody = z.object({
   email: z.string().email(),
   password: z.string(),
@@ -23,3 +23,12 @@ export interface LoginUserDTO {
   email: string;
   password: string;
 }
+
+// edit
+export const editBody = z.object({
+  email: z.string().email(),
+  password: z.string(),
+  name: z.string(),
+});
+
+export interface EditUserDTO extends CreateUserDTO {}

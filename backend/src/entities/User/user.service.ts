@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-import { CreateUserDTO, LoginUserDTO } from "./@types";
+import { CreateUserDTO, EditUserDTO, LoginUserDTO } from "./@types";
 
 import { UserRepository } from "./user.repository";
 
@@ -35,12 +35,37 @@ export class UserService {
 
     const tokenPayload = {
       id: userFound.id,
-      name: userFound.email,
+      name: userFound.name,
       email: userFound.email,
     };
 
     const token = Jwt.createToken(tokenPayload);
 
     return token;
+  }
+
+  static async edit({ name, email, password }: EditUserDTO, token: string) {
+    const hash = await bcrypt.hash(password, 3);
+
+    const tokenDecoded = Jwt.compareToken(token);
+
+    if (tokenDecoded instanceof Exception) {
+      throw new Exception(tokenDecoded.statusCode, tokenDecoded.message);
+    }
+
+    const userEdited = await UserRepository.edit(
+      { name, email, password: hash },
+      tokenDecoded.id
+    );
+
+    const tokenPayload = {
+      id: userEdited.id,
+      name: userEdited.name,
+      email: userEdited.email,
+    };
+
+    const updateToken = Jwt.createToken(tokenPayload);
+
+    return updateToken;
   }
 }

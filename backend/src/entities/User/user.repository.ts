@@ -1,4 +1,4 @@
-import { CreateUserDTO } from "./@types";
+import { CreateUserDTO, EditUserDTO } from "./@types";
 
 import { prisma } from "../../database";
 
@@ -17,5 +17,14 @@ export class UserRepository {
     });
 
     return userFound;
+  }
+
+  static async edit({ name, email, password }: EditUserDTO, userId: string) {
+    const userEdited = await prisma.user.update({
+      data: { name, email, password },
+      where: { id: userId },
+    });
+
+    return userEdited;
   }
 }
