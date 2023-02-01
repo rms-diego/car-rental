@@ -31,7 +31,7 @@ export class Jwt {
 
       return decodedToken;
     } catch {
-      throw new Exception(400, "Token Invalido");
+      throw new Exception(400, "Invalid Token");
     }
   }
 
