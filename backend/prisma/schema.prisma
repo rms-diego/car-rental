@@ -35,8 +35,7 @@ model Vehicle {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  reserveId String
-  reserve   Reserve? @relation(fields: [reserveId], references: [id])
+  Reserve Reserve?
 
   @@map("vehicle")
 }
@@ -46,7 +45,8 @@ model Reserve {
   createdAt DateTime @default(now())
   expiresIn DateTime
 
-  Vehicle Vehicle[]
+  vehicleId String  @unique
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
 
   @@map("reserve")
 }
