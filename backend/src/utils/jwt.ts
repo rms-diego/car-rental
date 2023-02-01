@@ -11,6 +11,13 @@ interface TokenPayloadType {
   email: string;
 }
 
+interface TokenDecoded {
+  id: string;
+  name: string;
+  email: string;
+  iat: number;
+}
+
 export class Jwt {
   static createToken(payload: TokenPayloadType) {
     const token = jwt.sign(payload, SECRET as string);
@@ -18,9 +25,9 @@ export class Jwt {
     return token;
   }
 
-  static compareToken(data: string) {
+  static compareToken(data: string): TokenDecoded | Exception {
     try {
-      const decodedToken = jwt.decode(data);
+      const decodedToken = jwt.decode(data) as TokenDecoded;
 
       return decodedToken;
     } catch {
