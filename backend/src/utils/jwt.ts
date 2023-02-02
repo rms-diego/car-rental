@@ -1,5 +1,8 @@
 import { FastifyRequest } from "fastify";
+
 import jwt from "jsonwebtoken";
+
+import { UserService } from "../entities/User/user.service";
 
 import { Exception } from "./Exception";
 
@@ -37,5 +40,7 @@ export class Jwt {
 
     const isValidToken = Jwt.compareToken(token as string);
     if (!isValidToken) throw new Exception(400, "invalid token");
+
+    await UserService.userExists(isValidToken.id);
   }
 }

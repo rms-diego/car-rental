@@ -11,7 +11,7 @@ import { Exception } from "../../utils/Exception";
 import { Jwt } from "../../utils/jwt";
 
 export class UserService {
-  private static async userExists(userId: string) {
+  static async userExists(userId: string) {
     const userFound = await UserRepository.findOneById(userId);
 
     if (!userFound) throw new Exception(400, "user does not exists");
