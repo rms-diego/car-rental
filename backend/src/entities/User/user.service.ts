@@ -11,7 +11,7 @@ import { Exception } from "../../utils/Exception";
 import { Jwt } from "../../utils/jwt";
 
 export class UserService {
-  static async userExists(userId: string) {
+  private static async userExists(userId: string) {
     const userFound = await UserRepository.findOneById(userId);
 
     if (!userFound) throw new Exception(400, "user does not exists");
@@ -21,6 +21,8 @@ export class UserService {
     const tokenDecoded = Jwt.compareToken(token);
 
     if (tokenDecoded) {
+      await UserService.userExists(tokenDecoded.id);
+
       const allVehicles = await VehicleService.getAllVehicles(tokenDecoded.id);
 
       return allVehicles;
