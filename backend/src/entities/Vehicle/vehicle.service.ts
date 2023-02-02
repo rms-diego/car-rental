@@ -67,4 +67,10 @@ export class VehicleService {
 
     return serializeVehicleEdited;
   }
+
+  static async deleteVehicle(vehicleId: string) {
+    await VehicleService.vehicleExists(vehicleId);
+
+    await VehicleRepository.deleteVehicle(vehicleId);
+  }
 }

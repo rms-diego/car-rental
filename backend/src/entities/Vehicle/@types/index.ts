@@ -28,3 +28,8 @@ export const editVehicleParams = zod.object({
 });
 
 export interface EditVehicleDTO extends CreateVehicleDTO {}
+
+//delete
+export const deleteVehicleParams = zod.object({
+  vehicleId: zod.string(),
+});

@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 
 import {
   createVehicleBody,
+  deleteVehicleParams,
   editVehicleBody,
   editVehicleParams,
 } from "./@types";
@@ -36,5 +37,13 @@ export class VehicleController {
     );
 
     return reply.status(200).send({ vehicleEdited: vehicleEdited });
+  }
+
+  static async deleteVehicle(request: FastifyRequest, reply: FastifyReply) {
+    const { vehicleId } = deleteVehicleParams.parse(request.params);
+
+    await VehicleService.deleteVehicle(vehicleId);
+
+    return reply.status(200).send({ message: "vehicle deleted" });
   }
 }

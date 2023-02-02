@@ -16,6 +16,12 @@ const vehicleRoutes = async (app: FastifyInstance) => {
     { preHandler: [Jwt.validateTokenHandler] },
     VehicleController.edit
   );
+
+  app.delete(
+    "/vehicle/edit/:vehicleId",
+    { preHandler: [Jwt.validateTokenHandler] },
+    VehicleController.deleteVehicle
+  );
 };
 
 export { vehicleRoutes };

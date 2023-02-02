@@ -47,4 +47,10 @@ export class VehicleRepository {
 
     return vehicleEdited;
   }
+
+  static async deleteVehicle(vehicleId: string) {
+    await prisma.vehicle.delete({
+      where: { id: vehicleId },
+    });
+  }
 }
