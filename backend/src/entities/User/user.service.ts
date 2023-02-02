@@ -11,16 +11,20 @@ import { Exception } from "../../utils/Exception";
 import { Jwt } from "../../utils/jwt";
 
 export class UserService {
+  static async userExists(userId: string) {
+    const userFound = await UserRepository.findOneById(userId);
+
+    if (!userFound) throw new Exception(400, "user does not exists");
+  }
+
   static async getAllVehicles(token: string) {
     const tokenDecoded = Jwt.compareToken(token);
 
-    if (tokenDecoded instanceof Exception) {
-      throw new Exception(tokenDecoded.statusCode, tokenDecoded.message);
+    if (tokenDecoded) {
+      const allVehicles = await VehicleService.getAllVehicles(tokenDecoded.id);
+
+      return allVehicles;
     }
-
-    const allVehicles = await VehicleService.getAllVehicles(tokenDecoded.id);
-
-    return allVehicles;
   }
 
   static async create({ name, email, password }: CreateUserDTO) {
@@ -41,11 +45,11 @@ export class UserService {
     const userFound = await UserRepository.findOneByEmail(email);
 
     if (!userFound) {
-      throw new Exception(404, "Wrong email or user does not exists");
+      throw new Exception(404, "wrong email or user does not exists");
     }
 
     const comparePassword = await bcrypt.compare(password, userFound.password);
-    if (!comparePassword) throw new Exception(400, "Wrong password");
+    if (!comparePassword) throw new Exception(400, "wrong password");
 
     const tokenPayload = {
       id: userFound.id,
@@ -59,40 +63,36 @@ export class UserService {
   }
 
   static async edit({ name, email, password }: EditUserDTO, token: string) {
-    const hash = await bcrypt.hash(password, 3);
-
     const tokenDecoded = Jwt.compareToken(token);
 
-    if (tokenDecoded instanceof Exception) {
-      throw new Exception(tokenDecoded.statusCode, tokenDecoded.message);
+    if (tokenDecoded) {
+      await UserService.userExists(tokenDecoded.id);
+
+      const hashPassword = await bcrypt.hash(password, 3);
+      const userEdited = await UserRepository.edit(
+        { name, email, password: hashPassword },
+        tokenDecoded.id
+      );
+
+      const tokenPayload = {
+        id: userEdited.id,
+        name: userEdited.name,
+        email: userEdited.email,
+      };
+
+      const updateToken = Jwt.createToken(tokenPayload);
+
+      return updateToken;
     }
-
-    const userEdited = await UserRepository.edit(
-      { name, email, password: hash },
-      tokenDecoded.id
-    );
-
-    const tokenPayload = {
-      id: userEdited.id,
-      name: userEdited.name,
-      email: userEdited.email,
-    };
-
-    const updateToken = Jwt.createToken(tokenPayload);
-
-    return updateToken;
   }
 
   static async deleteUser(token: string) {
     const tokenDecoded = Jwt.compareToken(token);
 
-    if (tokenDecoded instanceof Exception) {
-      throw new Exception(tokenDecoded.statusCode, tokenDecoded.message);
+    if (tokenDecoded) {
+      await UserService.userExists(tokenDecoded.id);
+
+      await UserRepository.deleteUser(tokenDecoded.id);
     }
-
-    const userExists = await UserRepository.findOneById(tokenDecoded.id);
-    if (!userExists) throw new Exception(400, "this user does not exists");
-
-    await UserRepository.deleteUser(tokenDecoded.id);
   }
 }
