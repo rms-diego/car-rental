@@ -27,7 +27,10 @@ export class UserRepository {
     return userFound;
   }
 
-  static async edit({ name, email, password }: EditUserDTO, userId: string) {
+  static async editUser(
+    { name, email, password }: EditUserDTO,
+    userId: string
+  ) {
     const userEdited = await prisma.user.update({
       data: { name, email, password },
       where: { id: userId },

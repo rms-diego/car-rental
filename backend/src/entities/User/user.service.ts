@@ -64,14 +64,14 @@ export class UserService {
     return token;
   }
 
-  static async edit({ name, email, password }: EditUserDTO, token: string) {
+  static async editUser({ name, email, password }: EditUserDTO, token: string) {
     const tokenDecoded = Jwt.compareToken(token);
 
     if (tokenDecoded) {
       await UserService.userExists(tokenDecoded.id);
 
       const hashPassword = await bcrypt.hash(password, 3);
-      const userEdited = await UserRepository.edit(
+      const userEdited = await UserRepository.editUser(
         { name, email, password: hashPassword },
         tokenDecoded.id
       );
