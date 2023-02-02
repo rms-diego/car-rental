@@ -1,4 +1,4 @@
-import { FastifyReply, FastifyRequest } from "fastify";
+import { FastifyRequest } from "fastify";
 import jwt from "jsonwebtoken";
 
 import { Exception } from "./Exception";
@@ -25,20 +25,17 @@ export class Jwt {
     return token;
   }
 
-  static compareToken(data: string): TokenDecoded | Exception {
-    try {
-      const decodedToken = jwt.decode(data) as TokenDecoded;
+  static compareToken(data: string) {
+    const decodedToken = jwt.decode(data) as null | TokenDecoded;
 
-      return decodedToken;
-    } catch {
-      throw new Exception(400, "Invalid Token");
-    }
+    return decodedToken;
   }
 
   static async validateTokenHandler(request: FastifyRequest) {
     const { token } = request.headers;
-
     if (!token) throw new Exception(400, "token is required");
-    Jwt.compareToken(token as string);
+
+    const isValidToken = Jwt.compareToken(token as string);
+    if (!isValidToken) throw new Exception(400, "invalid token");
   }
 }
