@@ -1,8 +1,24 @@
-import { CreateVehicleDTO } from "./@types";
+import { CreateVehicleDTO, EditVehicleDTO } from "./@types";
 
 import { prisma } from "../../database";
 
 export class VehicleRepository {
+  static async getAllVehicles(userId: string) {
+    const vehiclesFound = await prisma.vehicle.findMany({
+      where: { userId },
+    });
+
+    return vehiclesFound;
+  }
+
+  static async findOneById(vehicleId: string) {
+    const vehicleFound = await prisma.vehicle.findFirst({
+      where: { id: vehicleId },
+    });
+
+    return vehicleFound;
+  }
+
   static async createVehicle(
     { name, brand, type, vehicleImage }: CreateVehicleDTO,
     userId: string
@@ -20,11 +36,15 @@ export class VehicleRepository {
     return vehicleCreated;
   }
 
-  static async getAllVehicles(userId: string) {
-    const vehiclesFound = await prisma.vehicle.findMany({
-      where: { userId },
+  static async editVehicle(
+    { name, brand, type, vehicleImage }: EditVehicleDTO,
+    vehicleId: string
+  ) {
+    const vehicleEdited = await prisma.vehicle.update({
+      data: { name, brand, type, vehicleImage },
+      where: { id: vehicleId },
     });
 
-    return vehiclesFound;
+    return vehicleEdited;
   }
 }

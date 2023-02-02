@@ -10,6 +10,12 @@ const vehicleRoutes = async (app: FastifyInstance) => {
     { preHandler: [Jwt.validateTokenHandler] },
     VehicleController.create
   );
+
+  app.put(
+    "/vehicle/edit/:vehicleId",
+    { preHandler: [Jwt.validateTokenHandler] },
+    VehicleController.edit
+  );
 };
 
 export { vehicleRoutes };

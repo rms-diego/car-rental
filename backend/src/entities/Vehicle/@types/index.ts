@@ -14,3 +14,17 @@ export interface CreateVehicleDTO {
   name: string;
   vehicleImage: string;
 }
+
+// edit
+export const editVehicleBody = zod.object({
+  type: zod.string(),
+  brand: zod.string(),
+  name: zod.string(),
+  vehicleImage: zod.string(),
+});
+
+export const editVehicleParams = zod.object({
+  vehicleId: zod.string(),
+});
+
+export interface EditVehicleDTO extends CreateVehicleDTO {}

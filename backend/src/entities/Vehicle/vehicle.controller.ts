@@ -1,6 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 
-import { createVehicleBody } from "./@types";
+import {
+  createVehicleBody,
+  editVehicleBody,
+  editVehicleParams,
+} from "./@types";
+
 import { VehicleService } from "./vehicle.service";
 
 export class VehicleController {
@@ -17,5 +22,19 @@ export class VehicleController {
     );
 
     return reply.status(200).send({ message: "vehicle created" });
+  }
+
+  static async edit(request: FastifyRequest, reply: FastifyReply) {
+    const { vehicleId } = editVehicleParams.parse(request.params);
+    const { name, brand, type, vehicleImage } = editVehicleBody.parse(
+      request.body
+    );
+
+    const vehicleEdited = await VehicleService.edit(
+      { name, brand, type, vehicleImage },
+      vehicleId
+    );
+
+    return reply.status(200).send({ vehicleEdited: vehicleEdited });
   }
 }
