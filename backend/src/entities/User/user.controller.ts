@@ -33,7 +33,7 @@ export class UserController {
     const { token } = request.headers;
     const { name, email, password } = editBody.parse(request.body);
 
-    const tokenUpdated = await UserService.edit(
+    const tokenUpdated = await UserService.editUser(
       { name, email, password },
       token as string
     );
