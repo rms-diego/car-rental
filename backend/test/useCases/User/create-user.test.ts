@@ -4,7 +4,7 @@ import agent from "supertest";
 
 import { app } from "../../../src/app";
 
-import { NEW_USER_PAYLOAD } from "../mocks";
+import { NEW_USER_PAYLOAD } from "../../mocks";
 
 describe("Creating test for useCase of creating a new user", () => {
   beforeAll(async () => {
@@ -29,7 +29,7 @@ describe("Creating test for useCase of creating a new user", () => {
     expect(userCreated).toStrictEqual({ message: "user created" });
   });
 
-  test("[POST]'/user/create' - Should be thrown if trying to create a user that already exists", async () => {
+  test("[POST]'/user/create' - Should be error thrown if trying to create a user that already exists", async () => {
     const { body: userCreated } = await agent(app.server)
       .post("/user/create")
       .send(NEW_USER_PAYLOAD)

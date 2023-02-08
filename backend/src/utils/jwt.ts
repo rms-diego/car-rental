@@ -14,7 +14,7 @@ interface TokenPayloadType {
   email: string;
 }
 
-interface TokenDecoded {
+export interface TokenDecoded {
   id: string;
   name: string;
   email: string;

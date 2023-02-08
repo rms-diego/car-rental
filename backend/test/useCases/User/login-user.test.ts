@@ -16,7 +16,7 @@ import {
   INVALID_PASSWORD_LOGIN_USER_PAYLOAD,
   NEW_USER_PAYLOAD,
   VALID_LOGIN_USER_PAYLOAD,
-} from "../mocks";
+} from "../../mocks";
 
 describe("Creating test for useCase of creating a new user", () => {
   beforeAll(async () => {
