@@ -40,7 +40,7 @@ describe("Creating test for useCase of creating a new user", () => {
     await agent(app.server).delete("/user/deleteUser").set({ token });
   });
 
-  test("[Post] '/user/login' - Should be able to make login", async () => {
+  test("[POST] '/user/login' - Should be able to make login", async () => {
     const {
       body: { token },
     } = await agent(app.server)
@@ -52,7 +52,7 @@ describe("Creating test for useCase of creating a new user", () => {
     expect(token).toBeTypeOf("string");
   });
 
-  test("[Post] '/user/login' - Should be thrown a new error if user digit wrong email or user does not exists", async () => {
+  test("[POST] '/user/login' - Should be thrown a new error if user digit wrong email or user does not exists", async () => {
     const { body: error } = await agent(app.server)
       .post("/user/login")
       .send(INVALID_EMAIL_LOGIN_USER_PAYLOAD)
@@ -63,7 +63,7 @@ describe("Creating test for useCase of creating a new user", () => {
     });
   });
 
-  test("[Post] '/user/login' - Should be thrown a new error if user digit wrong password", async () => {
+  test("[POST] '/user/login' - Should be thrown a new error if user digit wrong password", async () => {
     const { body: error } = await agent(app.server)
       .post("/user/login")
       .send(INVALID_PASSWORD_LOGIN_USER_PAYLOAD)

@@ -1,10 +1,10 @@
 import {
-  expect,
   describe,
+  expect,
   test,
   beforeAll,
-  afterEach,
   beforeEach,
+  afterEach,
 } from "vitest";
 
 import agent from "supertest";
@@ -12,10 +12,9 @@ import agent from "supertest";
 import { app } from "../../../src/app";
 
 import { NEW_USER_PAYLOAD } from "../../mocks";
-
 import { Jwt, TokenDecoded } from "../../../src/utils/jwt";
 
-describe("Creating test for useCase of edit a user", () => {
+describe("Creating test for useCase of delete a user", () => {
   let token = "";
 
   beforeAll(async () => await app.ready());
@@ -31,18 +30,14 @@ describe("Creating test for useCase of edit a user", () => {
     token = body.token;
   });
 
-  // exclui o usuário cadastrado
+  // exclui o usuário cadastrado pelo 'beforeEach'
   afterEach(async () => {
-    await agent(app.server).delete("/user/deleteUser").set({ token });
+    if (token) {
+      await agent(app.server).delete("/user/deleteUser").set({ token });
+    }
   });
 
-  test("[PUT]'/user/edit' - Should be error thrown if token is not sent on headers", async () => {
-    const { body: error } = await agent(app.server).put("/user/edit");
-
-    expect(error).toStrictEqual({ error: "token is required" });
-  });
-
-  test("[PUT]'/user/edit' - Should be error thrown if user id does not exists on decoded token", async () => {
+  test("[DELETE]'/user/deleteUSer' - Should be error thrown if user id does not exists on decoded token", async () => {
     const tokenDecoded = Jwt.compareToken(token) as TokenDecoded;
 
     const INVALID_USER_ID = {
@@ -53,20 +48,22 @@ describe("Creating test for useCase of edit a user", () => {
     const TOKEN_INVALID_USER = Jwt.createToken(INVALID_USER_ID);
 
     const { body: error } = await agent(app.server)
-      .put("/user/edit")
+      .delete("/user/deleteUser")
       .send(NEW_USER_PAYLOAD)
       .set({ token: TOKEN_INVALID_USER });
+
+    console.log(error);
 
     expect(error).toStrictEqual({ error: "user does not exists" });
   });
 
-  test("[PUT]'/user/edit' - Should be able to edit a user ", async () => {
-    const { body: userEdited } = await agent(app.server)
-      .put("/user/edit")
+  test("[DELETE]'/user/deleteUSer' - ", async () => {
+    const { body: userDeleted } = await agent(app.server)
+      .delete("/user/deleteUser")
       .send(NEW_USER_PAYLOAD)
       .set({ token });
 
-    expect(userEdited.message).toStrictEqual("user edited");
-    expect(userEdited.newToken).toBeTypeOf("string");
+    expect(userDeleted).toStrictEqual({ message: "user deleted" });
+    token = "";
   });
 });
